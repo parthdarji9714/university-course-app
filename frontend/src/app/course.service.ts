@@ -10,7 +10,7 @@ export class CourseService {
   // private baseUrl = 'http://localhost:5000/api/courses'; // Replace with your backend URL
   //private baseUrl = 'http://localhost:5000/'; // Replace with your backend URL
 
-  private baseUrl = 'http://0.0.0.0:5000/'; // Replace with your backend URL
+  private baseUrl = 'https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/'; // Replace with your backend URL
   constructor(private http: HttpClient) { }
 
   // Fetch courses with pagination
