@@ -27,9 +27,18 @@ CORS(app, resources={
 app = Flask(__name__)
 
 # Replace with your actual MongoDB Atlas URI
-mongo_uri = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/university_db?retryWrites=true&w=majority&appName=Cluster0"
+#mongo_uri = os.getenv('MONGODB_URI')
 # Connect to MongoDB Atlas
-mongo = PyMongo(app, uri=mongo_uri)
+#mongo = PyMongo(app, uri=mongo_uri)
+mongo_uri = os.getenv('MONGODB_URI')
+
+if not mongo_uri:
+    raise ValueError("No MongoDB URI found in environment variables.")
+
+app.config["MONGO_URI"] = mongo_uri
+
+# Initialize PyMongo with the Flask app
+mongo = PyMongo(app)
 
 # Function to download data
 def download_data():
