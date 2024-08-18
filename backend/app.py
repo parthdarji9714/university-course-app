@@ -38,7 +38,8 @@ if not mongo_uri:
 app.config["MONGO_URI"] = mongo_uri
 
 # Initialize PyMongo with the Flask app
-mongo = PyMongo(app)
+mongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
+
 
 # Function to download data
 def download_data():
