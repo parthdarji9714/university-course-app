@@ -26,16 +26,11 @@ CORS(app, resources={
 
 # Get MongoDB URI from environment variable
 mongo_uri = os.getenv('MONGODB_URI')
-if not mongo_uri:
-    raise ValueError("No MONGODB_URI found in environment variables")
+
+# Ensure the URI includes ssl=True
+mongo_uri += "?ssl=true&ssl_cert_reqs=CERT_NONE"
 
 mongo = MongoClient(mongo_uri)
-
-# Check if the connection to MongoDB is established
-try:
-    mongo.server_info()  # Will raise an exception if connection is not established
-except Exception as e:
-    raise ConnectionError(f"Unable to connect to MongoDB: {e}")
 
 db = mongo.get_default_database()
 # Function to download data
