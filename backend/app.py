@@ -27,9 +27,9 @@ CORS(app, resources={
 app = Flask(__name__)
 
 # Replace with your actual MongoDB Atlas URI
-MONGO_URI = os.getenv("MONGO_URI")
+mongo_uri = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/university_db?retryWrites=true&w=majority&appName=Cluster0"
 # Connect to MongoDB Atlas
-mongo = PyMongo(app, uri=MONGO_URI)
+mongo = PyMongo(app, uri=mongo_uri)
 
 # Function to download data
 def download_data():
