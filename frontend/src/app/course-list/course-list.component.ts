@@ -30,6 +30,7 @@ export class CourseListComponent implements OnInit {
     };
     this.http.get<any>('https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/', { params })
       .subscribe(response => {
+        console.log('Response:', response);
         this.courses = response.courses;
         this.totalCourses = response.total_courses;
       }, error => {
