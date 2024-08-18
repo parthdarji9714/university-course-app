@@ -91,17 +91,52 @@ def refresh_data():
     # Insert normalized data into MongoDB
     mongo.db.courses.insert_many(df.to_dict('records'))
 
-@app.route('/')
-def home():
-    return jsonify({
-        "message":"Welcome to the root API",
-        "Status" : "success"
-    })
+@app.route('/', methods=['GET'])
+def root_get_courses():
+    search_query = request.args.get('query', '').strip()
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 10))
 
+    # Construct the query for searching on specific text fields
+    query_params = {}
+    if search_query:
+        text_fields = ['university', 'city', 'country', 'coursename', 'coursedescription']
+        search_conditions = []
+        for field in text_fields:
+            search_conditions.append({field: {'$regex': search_query, '$options': 'i'}})  # Case-insensitive search
+        query_params = {'$or': search_conditions}
+
+    # MongoDB query with pagination
+    courses = list(
+        mongo.db.courses.find(query_params)
+        .skip((page - 1) * page_size)
+        .limit(page_size)
+    )
+
+    # Convert ObjectId to string for JSON serialization
+    for course in courses:
+        course['_id'] = str(course['_id'])
+
+    # Include total count for pagination purposes
+    total_courses = mongo.db.courses.count_documents(query_params)
+
+    # Check if no courses were found
+    if total_courses == 0:
+        return jsonify({"error": "No courses found matching the criteria"}), 404
+
+    response = {
+        'total_courses': total_courses,
+        'page': page,
+        'page_size': page_size,
+        'courses': courses
+    }
+
+    return jsonify(response), 200
 @app.route('/download-data', methods=['GET'])
 def download_and_normalize():
     check_and_refresh_data()
     return jsonify({"msg": "Data checked and updated if necessary"}), 200
+
 
 @app.route('/api/courses', methods=['GET'])
 def get_courses():
