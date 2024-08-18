@@ -1,7 +1,7 @@
 import os
 from pymongo import MongoClient
 
-mongo_uri = os.getenv('MONGODB_URI') + "?tls=true&tlsAllowInvalidCertificates=true"
+mongo_uri = os.getenv('MONGODB_URI')
 
 try:
     mongo = MongoClient(mongo_uri)
