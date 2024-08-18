@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 #CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
 CORS(app, resources={
-    r"/api/*": {
+    r"/*": {
         "origins": [
             "http://localhost:4200",  # Allow local development (optional)
             "https://parthdarji9714.github.io/university-course-app"  # Allow your deployed GitHub Pages site
