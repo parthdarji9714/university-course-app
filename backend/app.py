@@ -91,6 +91,13 @@ def refresh_data():
     # Insert normalized data into MongoDB
     mongo.db.courses.insert_many(df.to_dict('records'))
 
+@app.route('/')
+def home():
+    return jsonify({
+        "message":"Welcome to the root API",
+        "Status" : "success"
+    })
+
 @app.route('/download-data', methods=['GET'])
 def download_and_normalize():
     check_and_refresh_data()
