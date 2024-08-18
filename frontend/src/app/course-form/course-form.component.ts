@@ -36,7 +36,7 @@ export class CourseFormComponent implements OnInit {
   
 
   loadCourse(): void {
-    this.http.get<any>(`https://your-heroku-app-name.herokuapp.com/${this.courseId}`)
+    this.http.get<any>(`https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/${this.courseId}`)
       .subscribe(response => {
         this.courseData = response;
       }, error => {
@@ -50,14 +50,14 @@ export class CourseFormComponent implements OnInit {
     }
 
     if (this.isEditMode) {
-      this.http.put<any>(`https://your-heroku-app-name.herokuapp.com/${this.courseId}`, this.courseData)
+      this.http.put<any>(`https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/${this.courseId}`, this.courseData)
         .subscribe(response => {
           this.router.navigate(['/search']);
         }, error => {
           console.error('Error updating course:', error);
         });
     } else {
-      this.http.post<any>('https://your-heroku-app-name.herokuapp.com/', this.courseData)
+      this.http.post<any>('https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/', this.courseData)
         .subscribe(response => {
           this.router.navigate(['/search']);
         }, error => {

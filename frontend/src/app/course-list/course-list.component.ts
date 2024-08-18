@@ -28,7 +28,7 @@ export class CourseListComponent implements OnInit {
       page_size: this.pageSize.toString(),
       search: this.searchQuery   // Add search query to the params
     };
-    this.http.get<any>('https://your-heroku-app-name.herokuapp.com/', { params })
+    this.http.get<any>('https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/', { params })
       .subscribe(response => {
         this.courses = response.courses;
         this.totalCourses = response.total_courses;
@@ -40,7 +40,7 @@ export class CourseListComponent implements OnInit {
   deleteCourse(courseId: string): void {
     const confirmDelete = confirm('Are you sure you want to delete this course?');
     if (confirmDelete) {
-      this.http.delete<any>(`https://your-heroku-app-name.herokuapp.com/${courseId}`)
+      this.http.delete<any>(`https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/${courseId}`)
         .subscribe(response => {
           alert('Course deleted successfully!');
           this.loadCourses(); // Reload courses after deletion

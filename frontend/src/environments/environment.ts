@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://your-heroku-app.herokuapp.com/' 
+  apiUrl: 'https://pure-depths-08517-1676a3ff0ea5.herokuapp.com/' 
 };
 
 /*
