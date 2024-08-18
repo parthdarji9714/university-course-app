@@ -25,7 +25,7 @@ export class CourseSearchComponent implements OnInit {
       page: this.page.toString(),
       page_size: this.pageSize.toString()
     };
-    this.http.get<any>('http://127.0.0.1:5000/', { params })
+    this.http.get<any>('https://your-heroku-app-name.herokuapp.com/', { params })
       .subscribe(response => {
         this.courses = response.courses;
         this.totalCourses = response.total_courses;
