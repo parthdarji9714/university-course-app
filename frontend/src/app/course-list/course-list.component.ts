@@ -28,7 +28,7 @@ export class CourseListComponent implements OnInit {
       page_size: this.pageSize.toString(),
       search: this.searchQuery   // Add search query to the params
     };
-    this.http.get<any>('http://127.0.0.1:5000/api/courses', { params })
+    this.http.get<any>('http://127.0.0.1:5000/', { params })
       .subscribe(response => {
         this.courses = response.courses;
         this.totalCourses = response.total_courses;
@@ -40,7 +40,7 @@ export class CourseListComponent implements OnInit {
   deleteCourse(courseId: string): void {
     const confirmDelete = confirm('Are you sure you want to delete this course?');
     if (confirmDelete) {
-      this.http.delete<any>(`http://127.0.0.1:5000/api/courses/${courseId}`)
+      this.http.delete<any>(`http://127.0.0.1:5000/${courseId}`)
         .subscribe(response => {
           alert('Course deleted successfully!');
           this.loadCourses(); // Reload courses after deletion

@@ -36,7 +36,7 @@ export class CourseFormComponent implements OnInit {
   
 
   loadCourse(): void {
-    this.http.get<any>(`http://127.0.0.1:5000/api/courses/${this.courseId}`)
+    this.http.get<any>(`http://127.0.0.1:5000/${this.courseId}`)
       .subscribe(response => {
         this.courseData = response;
       }, error => {
@@ -50,14 +50,14 @@ export class CourseFormComponent implements OnInit {
     }
 
     if (this.isEditMode) {
-      this.http.put<any>(`http://127.0.0.1:5000/api/courses/${this.courseId}`, this.courseData)
+      this.http.put<any>(`http://127.0.0.1:5000/${this.courseId}`, this.courseData)
         .subscribe(response => {
           this.router.navigate(['/search']);
         }, error => {
           console.error('Error updating course:', error);
         });
     } else {
-      this.http.post<any>('http://127.0.0.1:5000/api/courses', this.courseData)
+      this.http.post<any>('http://127.0.0.1:5000/', this.courseData)
         .subscribe(response => {
           this.router.navigate(['/search']);
         }, error => {
