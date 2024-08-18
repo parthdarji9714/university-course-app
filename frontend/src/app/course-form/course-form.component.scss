@@ -1,0 +1,25 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.invalid-feedback {
+    display: block;
+    color: red;
+}

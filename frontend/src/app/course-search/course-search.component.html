@@ -1,0 +1,22 @@
+<div class="search-container">
+    <input [(ngModel)]="searchQuery" placeholder="Search courses..." />
+    <button (click)="onSearch()">Search</button>
+    
+  </div>
+  
+  <div class="course-list">
+    <p *ngIf="!courses.length">No courses found.</p>
+    <div *ngFor="let course of courses">
+      <h3>{{ course.coursename }}</h3>
+      <p>{{ course.university }} - {{ course.city }}, {{ course.country }}</p>
+      <p>{{ course.coursedescription }}</p>
+      <!-- Add buttons for edit and delete (to be implemented later) -->
+    </div>
+  </div>
+  
+  <div class="pagination">
+    <button (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }} of {{ totalCourses | number }}</span>
+    <button (click)="onPageChange(page + 1)" [disabled]="page * pageSize >= totalCourses">Next</button>
+  </div>
+  
