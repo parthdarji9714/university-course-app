@@ -20,7 +20,7 @@ CORS(app, resources={
 }, supports_credentials=True)
 
 # Configuration
-app.config["MONGO_URI"] = "mongodb://localhost:27017/course_db"
+app.config["MONGO_URI"] = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongo = PyMongo(app)
 
 # Function to download data
