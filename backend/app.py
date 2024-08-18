@@ -18,7 +18,7 @@ CORS(app, resources={
             "https://parthdarji9714.github.io/university-course-app"  # Allow your deployed GitHub Pages site
         ]
     }
-}, supports_credentials=True)
+})
 
 
 # Configuration
