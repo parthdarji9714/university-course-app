@@ -40,7 +40,6 @@ app.config["MONGO_URI"] = mongo_uri
 # Initialize PyMongo with the Flask app
 mongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
 
-
 # Function to download data
 def download_data():
     url = "https://api.mockaroo.com/api/501b2790?count=100&key=8683a1c0"
@@ -52,8 +51,8 @@ def download_data():
 # Enhanced normalization function with correct column names
 def normalize_data(file_path):
     df = pd.read_csv(file_path)
-    
     df.columns = [col.lower().replace(' ', '_') for col in df.columns]
+    
     text_fields = ['university', 'city', 'country', 'coursename', 'coursedescription', 'currency']
     existing_text_fields = [field for field in text_fields if field in df.columns]
     
@@ -94,7 +93,6 @@ def check_and_refresh_data():
 def refresh_data():
     file_path = download_data()
     df = normalize_data(file_path)
-    
     df['last_update'] = datetime.utcnow()
     mongo.db.courses.insert_many(df.to_dict('records'))
 
@@ -103,9 +101,11 @@ def download_and_normalize():
     check_and_refresh_data()
     return jsonify({"msg": "Data checked and updated if necessary"}), 200
 
-
 @app.route('/', methods=['GET'])
 def get_courses():
+    # Check and refresh the data before querying
+    check_and_refresh_data()
+    
     search_query = request.args.get('query', '').strip()
     page = int(request.args.get('page', 1))
     page_size = int(request.args.get('page_size', 10))
