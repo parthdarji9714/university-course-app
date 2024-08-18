@@ -20,28 +20,17 @@ CORS(app, resources={
     }
 }, supports_credentials=True)
 
+
 # Configuration
-#app.config["MONGO_URI"] = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 #mongo = PyMongo(app)
-
 # Get MongoDB URI from environment variable
-mongo_uri = os.getenv('MONGODB_URI')
+app = Flask(__name__)
 
-# Ensure the URI includes ssl=True
-if "?" in mongo_uri:
-    mongo_uri += "&ssl=true&ssl_cert_reqs=CERT_NONE"
-else:
-    mongo_uri += "?ssl=true&ssl_cert_reqs=CERT_NONE"
+# Replace with your actual MongoDB Atlas URI
+MONGO_URI = os.getenv("MONGO_URI")
+# Connect to MongoDB Atlas
+mongo = PyMongo(app, uri=MONGO_URI)
 
-mongo = MongoClient(mongo_uri)
-
-try:
-    mongo.server_info()  # This will raise an exception if the connection fails
-except Exception as e:
-    raise ConnectionError(f"Unable to connect to MongoDB: {e}")
-
-
-db = mongo.get_default_database()
 # Function to download data
 def download_data():
     url = "https://api.mockaroo.com/api/501b2790?count=100&key=8683a1c0"
@@ -54,67 +43,49 @@ def download_data():
 def normalize_data(file_path):
     df = pd.read_csv(file_path)
     
-    # Convert column names to lowercase and replace spaces with underscores
     df.columns = [col.lower().replace(' ', '_') for col in df.columns]
-    
-    # List of text fields to normalize, checking if they exist in the DataFrame
     text_fields = ['university', 'city', 'country', 'coursename', 'coursedescription', 'currency']
     existing_text_fields = [field for field in text_fields if field in df.columns]
     
     if existing_text_fields:
-        # Strip leading/trailing spaces in text fields
         df[existing_text_fields] = df[existing_text_fields].apply(lambda x: x.str.strip())
-        
-        # Standardize text fields to title case (or lower case, depending on your needs)
         df[existing_text_fields] = df[existing_text_fields].apply(lambda x: x.str.title())
     
-    # Convert date fields to datetime and handle invalid dates, if they exist
     date_fields = ['start_date', 'end_date']
     for field in date_fields:
         if field in df.columns:
             df[field] = pd.to_datetime(df[field], errors='coerce')
     
-    # Remove rows where dates are missing or invalid
     if 'start_date' in df.columns and 'end_date' in df.columns:
         df.dropna(subset=['start_date', 'end_date'], inplace=True)
-        # Ensure start_date is before end_date
         df = df[df['start_date'] <= df['end_date']]
     
-    # Convert price to numeric, handling any non-numeric values
     if 'price' in df.columns:
         df['price'] = pd.to_numeric(df['price'], errors='coerce')
-        # Handle missing or invalid price
         df['price'].fillna(0, inplace=True)
     
     return df
 
-# Function to check for data expiration and refresh if necessary
 def check_and_refresh_data():
-    # Check if the 'last_update' field exists in the database
     latest_record = mongo.db.courses.find_one(sort=[("last_update", -1)])
     
     if latest_record:
         last_update_time = latest_record.get('last_update')
         current_time = datetime.utcnow()
         
-        # Check if the data is older than 10 minutes
         if last_update_time and current_time - last_update_time > timedelta(minutes=10):
             print("Data is expired. Refreshing...")
-            mongo.db.courses.delete_many({})  # Clear old data
-            refresh_data()  # Re-download, normalize, and store the data
+            mongo.db.courses.delete_many({})
+            refresh_data()
     else:
         print("No data found. Downloading...")
-        refresh_data()  # No data found, so download it
+        refresh_data()
 
-# Function to refresh data
 def refresh_data():
     file_path = download_data()
     df = normalize_data(file_path)
     
-    # Add 'last_update' timestamp to each record
     df['last_update'] = datetime.utcnow()
-    
-    # Insert normalized data into MongoDB
     mongo.db.courses.insert_many(df.to_dict('records'))
 
 @app.route('/download-data', methods=['GET'])
