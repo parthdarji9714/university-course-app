@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from flask_cors import CORS
 from datetime import datetime, timedelta
 import os
+from pymongo import MongoClient 
 
 app = Flask(__name__)
 
@@ -20,9 +21,23 @@ CORS(app, resources={
 }, supports_credentials=True)
 
 # Configuration
-app.config["MONGO_URI"] = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-mongo = PyMongo(app)
+#app.config["MONGO_URI"] = "mongodb+srv://parthdarji9714:Xxm1kBMQxh2EoAbc@cluster0.2pey1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#mongo = PyMongo(app)
 
+# Get MongoDB URI from environment variable
+mongo_uri = os.getenv('MONGODB_URI')
+if not mongo_uri:
+    raise ValueError("No MONGODB_URI found in environment variables")
+
+mongo = MongoClient(mongo_uri)
+
+# Check if the connection to MongoDB is established
+try:
+    mongo.server_info()  # Will raise an exception if connection is not established
+except Exception as e:
+    raise ConnectionError(f"Unable to connect to MongoDB: {e}")
+
+db = mongo.get_default_database()
 # Function to download data
 def download_data():
     url = "https://api.mockaroo.com/api/501b2790?count=100&key=8683a1c0"
